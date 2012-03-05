@@ -1,5 +1,11 @@
 %{
-    #include <stdio.h>
+  #include <stdio.h>
+  #include "environment.h"
+
+  Environment *top;
+  Environment *saved;
+  Symbol s;
+
 %}
 
 %token STRING
@@ -71,22 +77,24 @@
 %%
 
 
-tunit                   : begin
-                        | tunit begin
+tunit                   : begin          { top = NULL; }
+                        | tunit begin    { top = NULL; }
 ;
 
-begin                   : function_definition
-                        | decl
+begin                   : function_definition     //nothing
+                        | decl                    //nothing
 ;
 
-function_definition     : decl_specs declarator decl_list compound_stat
-                        |            declarator decl_list compound_stat
-                        | decl_specs declarator           compound_stat
-                        |            declarator           compound_stat
+                                                                            //Function def complete add
+                                                                            //it to current symbol table
+function_definition     : decl_specs declarator decl_list compound_stat     { top->table[s.name] = s; }
+                        |            declarator decl_list compound_stat     { top->table[s.name] = s; }
+                        | decl_specs declarator           compound_stat     { top->table[s.name] = s; }
+                        |            declarator           compound_stat     { top->table[s.name] = s; }
 ;
 
-decl                    : decl_specs init_declarator_list ';'
-                        | decl_specs                      ';'
+decl                    : decl_specs init_declarator_list ';'     { top->table[s.name] = s; }
+                        | decl_specs                      ';'     { top->table[s.name] = s; }
 ;
 
 decl_list               : decl
@@ -97,7 +105,7 @@ decl_specs              : type_spec
                         | type_spec decl_specs
 ;
 
-type_spec               : struct_spec| VOID | CHAR | INTEGER | BOOL
+type_spec               : struct_spec | VOID | CHAR | INTEGER | BOOL
 ;
 
 struct_spec             : STRUCT ID '{' struct_decl_list '}'
@@ -133,7 +141,7 @@ declarator              : pointer direct_declarator
 ;
 
 direct_declarator       : ID
-                        | '(' declarator ')'
+                        | '(' declarator ')'                      
                         | direct_declarator '[' const_exp ']'
                         | direct_declarator '['           ']'
                         | direct_declarator '(' param_list ')'
@@ -201,10 +209,10 @@ exp_stat                : exp ';'
                         |     ';'
 ;
 
-compound_stat           : '{' decl_list stat_list '}'
-                        | '{'           stat_list '}'
-                        | '{' decl_list           '}'
-                        | '{'                     '}'
+compound_stat           : '{' decl_list stat_list '}'    { saved = top; top = new Environment(saved); }
+                        | '{'           stat_list '}'    { saved = top; top = new Environment(saved); }
+                        | '{' decl_list           '}'    { saved = top; top = new Environment(saved); }
+                        | '{'                     '}'    { saved = top; top = new Environment(saved); }
 ;
 
 stat_list               : stat
