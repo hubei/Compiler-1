@@ -15,9 +15,9 @@
 
 void yyerror(char*s);
 
-#include "lex.yy.c"
+#include "ast.hh"
 #include "y.tab.h"
-#include "y.tab.c"
+#include "lexer.hh"
 
 class Parser
 {

@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 Washington State University. All rights reserved.
 //
 
-#include "parser.h"
+#include "parser.hh"
 
 using std::cout;
 using std::cin;
@@ -27,7 +27,7 @@ int main(int argc, char** argv)
     p.Parse(infile);
 }
 
-void yyerror(char*s)
+void yyerror(const char*s)
 {
     cout << "ERROR!:->  " << endl;
     cout << "line: " << yylineno << endl;

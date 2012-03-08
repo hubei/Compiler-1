@@ -1,122 +1,89 @@
-/* Definitions */
 %{
-	#include "y.tab.h"    
-    #include <stdio.h>
-    
-    void comment();
-    
+#include "ast.hh"
+#include "y.tab.h"
+#include "lexer.hh"
+
 %}
 
-L [A-Za-z_]
-D [0-9]
-D1 [1-9]
-H [0-9a-fA-F_]
+D	[0-9]
+H	[0-9A-Fa-f]
+L	[A-Za-z_]
 
-BAD [#|%|~]
-STRING L?\"(\\.|[^\\"])*\"
+%%
+"/*"([^\*]|\*[^/])*"*/"	{}
 
+"_Bool"		{ yylval.intval = T_BOOL; return TYPE; }
+"break"		return BREAK;
+"char"		{ yylval.intval = T_CHAR; return TYPE; }
+"do"		return DO;
+"else"		return ELSE;
+"for"		return FOR;
+"if"		return IF;
+"int"		{ yylval.intval = T_INT; return TYPE; }
+"return"	return RETURN;
+"struct"	return STRUCT;
+"void"		{ yylval.intval = T_VOID; return TYPE; }
+"while"		return WHILE;
 
+{L}({L}|{D})*	{ yylval.strval = yytext; return IDENTIFIER; }
+"0"{D}+		{
+			yylval.intval = (int)strtol(yytext + 1, NULL, 8);
+			return INTEGER;
+		}
+"0x"{H}+	{
+			yylval.intval = (int)strtol(yytext + 2, NULL, 16);
+			return INTEGER;
+		}
+{D}+		{
+			yylval.intval = (int)strtol(yytext, NULL, 10);
+			return INTEGER;
+		}
+'[^\\']'	{ yylval.intval = (int)yytext[1]; return INTEGER; }
+'\\.'		{
+			yylval.intval = (int)strtol(yytext + 1, NULL, 8);
+			return INTEGER;
+		}
+
+"+="		return ADD_ASSIGN;
+"-="		return SUB_ASSIGN;
+"*="		return MUL_ASSIGN;
+"/="		return DIV_ASSIGN;
+"++"		return INC;
+"--"		return DEC;
+"&&"		return AND;
+"||"		return OR;
+"<="		return LE;
+">="		return GE;
+"=="		return EQ;
+"!="		return NE;
+";"		return ';';
+"{"		return '{';
+"}"		return '}';
+","		return ',';
+":"		return ':';
+"="		return '=';
+"("		return '(';
+")"		return ')';
+"["		return '[';
+"]"		return ']';
+"."		return '.';
+"-"		return '-';
+"+"		return '+';
+"*"		return '*';
+"/"		return '/';
+"%"		return '%';
+"<"		return '<';
+">"		return '>';
+"!"		return '!';
+
+[ \t]		;
+"\n"		yylineno++;
+.		yyerror("invalid input");
 
 %%
 
-"/*" { comment(); }
-
-"|" return '|';
-"+" return '+';
-";" return ';';
-"!" return '!';
-"-" return '-';
-"*" return '*';
-"." return '.';
-"," return ',';
-"=" return '=';
-"[" return '[';
-"]" return ']';
-"(" return '(';
-")" return ')';
-"}" return '}';
-"{" return '{';
-":" return ':';
-"%" return '%';
-"^" return '^';
-"&" return '&';
-"~" return '~';
-"/=" return DIVEQ;
-"%=" return MODEQ;
-"+=" return ADDEQ;
-"-=" return SUBEQ;
-"<<=" return SLEQ;
-">>=" return SREQ;
-"&=" return ANDEQ;
-"^=" return CAREQ;
-"|=" return PIPEQ;
-"*=" return MULEQ;
-"++" return INCR;
-"--" return DECR;
-"->" return PTRDR;
-"bool" return BOOL;
-"break" return BREAK;
-"if" return IF;
-"else" return ELSE;
-"int" return INTEGER;
-"return" return RETURN;
-"struct" return STRUCT;
-"void" return VOID;
-"char" return CHAR;
-"while" return WHILE;
-"continue" return CONTINUE;
-"do" return DO;
-"for" return FOR;
-{L}({L}|{D})* return ID;
-"<=" return LE;
-">=" return GE;
-"==" return EQ;
-"!=" return NE;
-"<" return LT;
-">" return GT;
-"&&" return AND;
-"||" return OR;
-"<<" return SHIFTL;
-">>" return SHIFTR;
-{D1}({D})* return DECIMAL;
-"0" return DECIMAL;
-0({D})* return OCTAL;
-0x({H})* return HEX;
-{BAD} return BAD;
-{STRING} return STRING;
-"/" {  }
-[ \t\v\n\f]  {  }
-L?'(\\.|[^\\'])+'	{ return STRING; }
-
-%%
-/* Subroutines  */
-
-int yywrap(void) {
-    return 1;
-}
-
-void comment()
+int
+yywrap()
 {
-	char c, c1;
-    
-    loop:
-	while ((c = yyinput()) != '*' && c != 0) 
-    {  
-        //putchar(c);
-    }
-        
-	if ((c1 = yyinput()) != '/' && c != 0)
-	{
-		unput(c1);
-		goto loop;
-	}
-    
-	//if (c != 0)
-    //putchar(c1);
+	return 1;
 }
-
-/*int main(void) {
- printf("Hi",1);
- yylex();
- return 0;
- }*/
