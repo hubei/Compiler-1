@@ -6,9 +6,9 @@
 // Copyright: Washington State University
 // Created: Tue Mar  6 20:18:58 2012 (-0800)
 // Version: 
-// Last-Updated: Thu Mar  8 15:12:41 2012 (-0800)
+// Last-Updated: Thu Mar  8 16:23:41 2012 (-0800)
 //           By: Ryan Goodfellow
-//     Update #: 83
+//     Update #: 96
 // 
 
 #ifndef _AST_HH_
@@ -503,7 +503,6 @@ namespace Ast
 //  of the BinExp object.  Not that this is not an AstNode iteslf
 //
 // /////////////////////////////////////////////////////////////////
-
   class BinExFactory
   {
   public:
@@ -517,15 +516,80 @@ namespace Ast
     static BinaryExp<BinEx::And> * CreateAnd(BinaryExp<BinEx::And> *a,
 					     BinaryExp<BinEx::Eq> *e);
 
+    // -EQ-
+    static BinaryExp<BinEx::Eq> * CreateEq(BinaryExp<BinEx::Rel> *r);
+    static BinaryExp<BinEx::Eq> * CreateEq(BinaryExp<BinEx::Eq> *e,
+					   BinaryExp<BinEx::Rel> *r, 
+					   bool indicator);
 
+    // -REL-
+    static BinaryExp<BinEx::Rel> * CreateRel(BinaryExp<BinEx::Add> *a);
+    static BinaryExp<BinEx::Rel> * CreateRel(BinaryExp<BinEx::Rel> *r,
+					     BinaryExp<BinEx::Add> *a, 
+					     std::string indicator);
 
+    // -ADD-
+    static BinaryExp<BinEx::Add> * CreateAdd(BinaryExp<BinEx::Mul> *m);
+    static BinaryExp<BinEx::Add> * CreateAdd(BinaryExp<BinEx::Add> *a,
+					     BinaryExp<BinEx::Mul> *m,
+					     char indicator);
 
+    // -MUL-
+    static BinaryExp<BinEx::Mul> * CreateMul(UnaryExpr *u);
+    static BinaryExp<BinEx::Mul> * CreateMul(BinaryExp<BinEx::Mul> *m,
+					     UnaryExpr *u,
+					     char indicator);
 
   };
 
+// /////////////////////////////////////////////////////////////////
+// 
+//  UnaryExpr:
+//
+//  This AstNode represents the unary expression non terminal in
+//  the simple C grammar
+//
+// /////////////////////////////////////////////////////////////////
+  class UnaryExpr : AstNode<UnaryExpr>
+  {
+  public:
+    UnaryExpr(PostfixExpr *p);
+    UnaryExpr(UnaryExpr *u, std::string);
+  };
 
+// /////////////////////////////////////////////////////////////////
+// 
+//  PostfixExpr:
+//
+//  This AstNode represents the postfix expression non terminal in
+//  the simple C grammar
+//
+// /////////////////////////////////////////////////////////////////
+  class PostfixExpr : AstNode<PostfixExpr>
+  {
+  public:
+    PostfixExpr(PrimaryExpr *p);
+    PostfixExpr(PostfixExpr *pf , Expression *e);
+    PostfixExpr(PostfixExpr *pf);
+    PostfixExpr(PostfixExpr *pf, ArgumentList *al);
+    PostfixExpr(PostfixExpr *pf, std::string);
+  };
 
-
+// /////////////////////////////////////////////////////////////////
+// 
+//  PrimaryExpr:
+//
+//  This AstNode represents the postfix expression non terminal in
+//  the simple C grammar
+//
+// /////////////////////////////////////////////////////////////////
+  class PrimaryExpr : AstNode<PrimaryExpr>
+  {
+  public:
+    PrimaryExpr(std::string id);
+    PrimaryExpr(int integer);
+    PrimaryExpr(Expression *e);
+  };
 
 
 

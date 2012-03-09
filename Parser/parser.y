@@ -393,52 +393,139 @@ and_expr
 
 eq_expr
 	: rel_expr
+	{
+	  $$ = Ast::BinExFactory::CreateEq($1);
+	}
 	| eq_expr EQ rel_expr
+	{
+	  $$ = Ast::BinExFactory::CreateEq($1, $3, true);
+	}
 	| eq_expr NE rel_expr
+	{
+	  $$ = Ast::BinExFactory::CreateEq($1, $3, false);
+	}
 	;
 
 rel_expr
 	: add_expr
+	{
+	  $$ = Ast::BinExFactory::CreateRel($1);
+	}
 	| rel_expr '<' add_expr
+	{
+	  $$ = Ast::BinExFactory::CreateRel($1, $3, "<");
+	}
 	| rel_expr '>' add_expr
+	{
+	  $$ = Ast::BinExFactory::CreateRel($1, $3, ">");
+	}
 	| rel_expr LE add_expr
+	{
+	  $$ = Ast::BinExFactory::CreateRel($1, $3, "<=");
+	}
 	| rel_expr GE add_expr
+	{
+	  $$ = Ast::BinExFactory::CreateRel($1, $3, ">=");
+	}
 	;
 
 add_expr
 	: mul_expr
+	{
+	  $$ = Ast::BinExFactory::CreateAdd($1);
+	}
 	| add_expr '+' mul_expr
+	{
+	  $$ = Ast::BinExFactory::CreateAdd($1, $3, '+');
+	}
 	| add_expr '-' mul_expr
+	{
+	  $$ = Ast::BinExFactory::CreateAdd($1, $3, '-');
+	}
 	;
 
 mul_expr
 	: unary_expr
+	{
+	  $$ = Ast::BinExFactory::CreateMul($1);
+	}
 	| mul_expr '*' unary_expr
+	{
+	  $$ = Ast::BinExFactory::CreateMul($1, $3, '*');
+	}
 	| mul_expr '/' unary_expr
+	{
+	  $$ = Ast::BinExFactory::CreateMul($1, $3, '/');
+	}
 	| mul_expr '%' unary_expr
+	{
+	  $$ = Ast::BinExFactory::CreateMul($1, $3, '%');
+	}
 	;
 
 unary_expr
 	: postfix_expr
+	{
+	  $$ = new Ast::UnaryExpr($1);
+	}
 	| INC unary_expr
+	{
+	  $$ = new Ast::UnaryExpr($2, "++");
+	}
 	| DEC unary_expr
+	{
+	  $$ = new Ast::UnaryExpr($2, "--");
+	}
 	| '-' unary_expr
+	{
+	  $$ = new Ast::UnaryExpr($2, "-");
+	}
 	;
 
 postfix_expr
 	: primary_expr
+	{
+	  $$ = new Ast::PostfixExpr($1);
+	}
 	| postfix_expr '[' expr ']'
+	{
+	  $$ = new Ast::PostfixExpr($1, $3);
+	}
 	| postfix_expr '(' ')'
+	{
+	  $$ = new Ast::PostfixExpr($1);
+	}
 	| postfix_expr '(' args ')'
+	{
+	  $$ = new Ast::PostfixExpr($1, $3);
+	}
 	| postfix_expr '.' IDENTIFIER
+	{
+	  $$ = new Ast::PostfixExpr($1, $3);
+	}
 	| postfix_expr INC
+	{
+	  $$ = new Ast::PostfixExpr($1, "++");
+	}
 	| postfix_expr DEC
+	{
+	  $$ = new Ast::PostfixExpr($1, "--");
+	}
 	;
 
 primary_expr
 	: IDENTIFIER
+	{
+	  $$ = new Ast::PrimaryExpr($1);
+	}
 	| INTEGER
+	{
+	  $$ = new Ast::PrimaryExpr($1);
+	}
 	| '(' expr ')'
+	{
+	  $$ = new Ast::PrimaryExpr($2);
+	}
 	;
 
 %%

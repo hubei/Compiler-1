@@ -6,9 +6,9 @@
 // Copyright: Washington State University
 // Created: Tue Mar  6 20:44:08 2012 (-0800)
 // Version: 
-// Last-Updated: Thu Mar  8 15:13:07 2012 (-0800)
+// Last-Updated: Thu Mar  8 16:25:04 2012 (-0800)
 //           By: Ryan Goodfellow
-//     Update #: 56
+//     Update #: 68
 // 
 
 
@@ -442,24 +442,144 @@ Ast::BinExFactory::CreateOr(Ast::BinaryExp<Ast::BinEx::Or> *o,
 
 // -AND-
 Ast::BinaryExp<Ast::BinEx::And> * 
-Ast::BinExFactory::CreateAnd(BinaryExp<BinEx::Eq> *e)
+Ast::BinExFactory::CreateAnd(BinaryExp<Ast::BinEx::Eq> *e)
 {
 
 }
 
 Ast::BinaryExp<Ast::BinEx::And> * 
-Ast::BinExFactory::CreateAnd(BinaryExp<BinEx::And> *a,
-				   BinaryExp<BinEx::Eq> *e)
+Ast::BinExFactory::CreateAnd(BinaryExp<Ast::BinEx::And> *a,
+			     BinaryExp<Ast::BinEx::Eq> *e)
 {
 
 }
 
+// -EQ-
+Ast::BinaryExp<Ast::BinEx::Eq> * 
+Ast::BinExFactory::CreateEq(BinaryExp<Ast::BinEx::Rel> *r)
+{
+
+}
+
+Ast::BinaryExp<Ast::BinEx::Eq> * 
+Ast::BinExFactory::CreateEq(BinaryExp<Ast::BinEx::Eq> *e,
+			    BinaryExp<Ast::BinEx::Rel> *r, 
+			    bool indicator)
+{
+
+}
+
+// -REL-
+Ast::BinaryExp<Ast::BinEx::Rel> * 
+Ast::BinExFactory::CreateRel(BinaryExp<BinEx::Add> *a)
+{
+
+}
+ 
+Ast::BinaryExp<Ast::BinEx::Rel> * 
+Ast::BinExFactory::CreateRel(BinaryExp<BinEx::Rel> *r,
+			     BinaryExp<BinEx::Add> *a, 
+			     std::string indicator)
+{
+
+}
+
+// -ADD-
+Ast::BinaryExp<Ast::BinEx::Add> * 
+Ast::BinExFactory::CreateAdd(BinaryExp<BinEx::Mul> *m)
+{
+
+}
+ 
+Ast::BinaryExp<Ast::BinEx::Add> * 
+Ast::BinExFactory::CreateAdd(BinaryExp<BinEx::Add> *a,
+			     BinaryExp<BinEx::Mul> *m,
+			     char indicator)
+{
+
+}
+
+// -MUL-
+Ast::BinaryExp<Ast::BinEx::Mul> * 
+Ast::BinExFactory::CreateMul(UnaryExpr *u)
+{
+
+}
+ 
+Ast::BinaryExp<Ast::BinEx::Mul> * 
+Ast::BinExFactory::CreateMul(BinaryExp<BinEx::Mul> *m,
+			     UnaryExpr *u,
+			     char indicator)
+{
+
+}
+
+// /////////////////////////////////////////////////////////////////
+// 
+// Ast::UnaryExpr function definitions
+//
+// /////////////////////////////////////////////////////////////////
+
+Ast::UnaryExpr::UnaryExpr(Ast::PostfixExpr *p)
+{
+
+}
+
+Ast::UnaryExpr::UnaryExpr(Ast::UnaryExpr *u, std::string)
+{
+
+}
+
+// /////////////////////////////////////////////////////////////////
+// 
+//  Ast::PostfixExpr function definitions
+//
+// /////////////////////////////////////////////////////////////////
 
 
+Ast::PostfixExpr::PostfixExpr(Ast::PrimaryExpr *p)
+{
 
+}
 
+Ast::PostfixExpr::PostfixExpr(Ast::PostfixExpr *pf , Ast::Expression *e)
+{
 
+}
 
+Ast::PostfixExpr::PostfixExpr(Ast::PostfixExpr *pf)
+{
+
+}
+
+Ast::PostfixExpr::PostfixExpr(Ast::PostfixExpr *pf, Ast::ArgumentList *al)
+{
+
+}
+
+Ast::PostfixExpr::PostfixExpr(Ast::PostfixExpr *pf, std::string)
+{
+
+}
+
+// /////////////////////////////////////////////////////////////////
+// 
+// Ast::PrimaryExpr function definitions
+//
+// /////////////////////////////////////////////////////////////////
+Ast::PrimaryExpr::PrimaryExpr(std::string id)
+{
+
+}
+Ast::PrimaryExpr::PrimaryExpr(int integer)
+{
+
+}
+
+Ast::PrimaryExpr::PrimaryExpr(Ast::Expression *e)
+{
+
+}
 
 
 
